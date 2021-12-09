@@ -1,18 +1,52 @@
 {
   "name": "oakenshield",
+  "author": "clas wen",
   "version": "0.0.0",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "serve": "vite preview",
+    "electron": "wait-on tcp:3000 && cross-env NODE_ENV=development electron .",
+    "electron:serve": "concurrently -k \"yarn dev\" \"yarn electron\"",
+    "electron:build": "vite build && electron-builder",
+    "electron:serve1": "cross-env NODE_ENV=development electron ."
   },
   "dependencies": {
-    "vue": "^3.2.23"
+    "vue": "^3.2.23",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.10.2",
+    "concurrently": "^6.4.0",
+    "cross-env": "^7.0.3",
+    "electron-builder": "^22.14.5",
     "typescript": "^4.4.4",
+    "electron": "^16.0.4",
     "vite": "^2.7.0",
-    "vue-tsc": "^0.28.10"
+    "vite-plugin-windicss": "^1.5.4",
+    "vue-tsc": "^0.28.10",
+    "wait-on": "^6.0.0",
+    "windicss": "^3.2.1"
+  },
+  "build": {
+    "appId": "oaken-shield",
+    "productName": "ElectronApp",
+    "copyright": "Copyright © 2021 <clas_wen>",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    }
   }
 }
