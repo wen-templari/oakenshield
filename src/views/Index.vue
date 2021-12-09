@@ -2,9 +2,9 @@
 import WindowButtonGroup from "@/components/WindowButtonGroup/WindowButtonGroup.vue";
 import Message from "@/components/Message/Message.vue";
 import Login from "@/components/Login/Login.vue";
-let i = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-</script>
+let i = [];
 
+</script>
 <template>
   <WindowButtonGroup></WindowButtonGroup>
   <div class="flex">
@@ -12,7 +12,7 @@ let i = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
       <router-view>
         <!-- <Login></Login> -->
         <div class="w-full h-13 flex-shrink-0 drag flex flex-row-reverse items-center">
-          <div class="mr-[14px]">+</div>
+          <div class="mr-[14px] px-2 bg-black">+</div>
         </div>
         <div class="flex flex-col overflow-auto">
           <input class="rounded-lg border-transparent mt-1 mx-2 h-8 textInput materialInput p-3 text-sm" type="text" name="" id="" />

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-
+import { ws } from "@/socket/main.js";
 // interface Message {
 //   from: string;
 //   to: string;
@@ -11,6 +11,20 @@ import { ref } from "vue";
 let messages = ref([]);
 let self = "tom";
 
+// const ws = new WebSocket("ws://localhost:8080/test");
+// ws.onopen = function (evt) {
+//   console.log("Connection open ...");
+// };
+// //接收到消息时触发
+// ws.onmessage = function (evt) {
+//   // console.log("Received Message: " + evt.data);
+//   messages.value.push(JSON.parse(evt.data));
+// };
+// //连接关闭时触发
+// ws.onclose = function (evt) {
+//   console.log("Connection closed.");
+// };
+
 const setMessage = () => {
   let message = {
     to: "tom",
@@ -20,18 +34,23 @@ const setMessage = () => {
   };
   messages.value.push(message);
 };
+
 setMessage();
 const inputMessage = ref("");
 const sendMessage = () => {
+  if (inputMessage.value == "") {
+    return;
+  }
   let message = {
     to: "cat",
     from: "tom",
     content: inputMessage.value,
     time: "",
   };
+  ws.send(JSON.stringify(message));
   inputMessage.value = "";
-  console.log(messages.value);
-  messages.value.push(message);
+  // console.log(messages.value);
+  // messages.value.push(message);
 };
 </script>
 <template>
