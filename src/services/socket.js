@@ -15,4 +15,8 @@ ws.onclose = function (evt) {
   console.log("Connection closed.");
 };
 
+const websocket = {
+  ws,
+};
+
 export { ws };

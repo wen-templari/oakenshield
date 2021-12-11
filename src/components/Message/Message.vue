@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { ws } from "@/socket/main.js";
+import { ref, onBeforeUnmount } from "vue";
+// import { ws } from "@/services/socket.js";
 // interface Message {
 //   from: string;
 //   to: string;
@@ -8,50 +8,45 @@ import { ws } from "@/socket/main.js";
 //   time: string;
 // }
 
-let messages = ref([]);
-let self = "tom";
+const wsAddr = "ws://localhost:8080/message";
+const id = localStorage.getItem("id");
+let ws = new WebSocket(wsAddr + "?id=" + id);
 
-// const ws = new WebSocket("ws://localhost:8080/test");
-// ws.onopen = function (evt) {
-//   console.log("Connection open ...");
-// };
-// //接收到消息时触发
-// ws.onmessage = function (evt) {
-//   // console.log("Received Message: " + evt.data);
-//   messages.value.push(JSON.parse(evt.data));
-// };
-// //连接关闭时触发
-// ws.onclose = function (evt) {
-//   console.log("Connection closed.");
-// };
-
-const setMessage = () => {
-  let message = {
-    to: "tom",
-    from: "cat",
-    content: "hello",
-    time: "1",
-  };
-  messages.value.push(message);
+ws.onopen = function (evt) {
+  console.log("Connection open ...");
+};
+//接收到消息时触发
+ws.onmessage = function (evt) {
+  console.log("Received Message: " + evt.data);
+  messages.value.push(JSON.parse(evt.data));
+};
+//连接关闭时触发
+ws.onclose = function (evt) {
+  console.log("Connection closed.");
 };
 
-setMessage();
+let messages = ref([]);
+// let self = "tom";
+
 const inputMessage = ref("");
 const sendMessage = () => {
   if (inputMessage.value == "") {
     return;
   }
   let message = {
-    to: "cat",
-    from: "tom",
+    to: "233",
+    from: id,
     content: inputMessage.value,
     time: "",
   };
   ws.send(JSON.stringify(message));
+  messages.value.push(message);
   inputMessage.value = "";
-  // console.log(messages.value);
-  // messages.value.push(message);
 };
+onBeforeUnmount(() => {
+  console.log("close");
+  ws.close();
+});
 </script>
 <template>
   <div class="flex flex-col justify-start h-full">
@@ -60,7 +55,7 @@ const sendMessage = () => {
       <div
         v-for="item in messages"
         class="py-1 px-2 m-1 rounded-lg shadow-sm w-min"
-        :class="[item.from == self ? 'self-end bg-blue-200' : 'bg-gray-200']"
+        :class="[item.from == id ? 'self-end bg-blue-200' : 'bg-gray-200']"
       >
         {{ item.content }}
       </div>
