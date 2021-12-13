@@ -8,7 +8,6 @@ import { ref } from "@vue/reactivity";
 
 const id = ref("");
 const password = ref("");
-const name = ref("");
 
 const login = () => {
   Account.login({
@@ -20,36 +19,26 @@ const login = () => {
   });
 };
 
-const register = ref(false);
-const registerSwitch = b => {
-  register.value = b;
+const switchToRegister = () => {
+  router.push("/register");
 };
 </script>
 <template>
   <WindowButtonGroup></WindowButtonGroup>
-  <LayoutBase class="select-none">
+  <LayoutBase>
     <template #side>
       <div class="w-full h-13 drag"></div>
       <div class="flex flex-col items-center h-full border">
         <div class="h-1/4 flex flex-col justify-center">
           <div class="text-center text-3xl font-semibold tracking-wide mt-10">OakenShield</div>
-          <div class="text-center text-2xl mt-6" v-if="!register">需要登入来开始聊天</div>
-          <div class="text-center text-2xl mt-6" v-if="register">注册账号</div>
+          <div class="text-center text-2xl mt-6">需要登入来开始聊天</div>
         </div>
-        <form class="flex flex-col p-5 mt-15 w-full" v-if="!register">
+        <form class="flex flex-col p-5 mt-15 w-full">
           <InputBase class="no-drag my-2 w-full" v-model:content="id" placeholder="ID" />
           <InputBase class="no-drag my-2 w-full" v-model:content="password" placeholder="密码" type="password" />
           <button class="no-drag mt-6 btn btnPrimary w-full" @click.prevent="login">登入</button>
-          <div class="mt-5 flex flex-col items-center text-center">
-            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="registerSwitch(true)">没有账号?</div>
-          </div>
-        </form>
-        <form class="flex flex-col p-5 mt-15 w-full" v-if="register">
-          <InputBase class="no-drag my-2 w-full" v-model:content="name" placeholder="昵称" />
-          <InputBase class="no-drag my-2 w-full" v-model:content="password" placeholder="密码" type="password" />
-          <button class="no-drag mt-6 btn btnPrimary w-full" @click.prevent="login">注册</button>
-          <div class="mt-5 flex flex-col items-center text-center">
-            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="registerSwitch(false)">有账号了</div>
+          <div class="mt-5">
+            <div class="text-center text-indigo-700 text-sm font-semibold" @click="switchToRegister">创建账号</div>
           </div>
         </form>
         <div></div>

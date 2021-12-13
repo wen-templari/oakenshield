@@ -2,18 +2,63 @@
 <script setup>
 import { ref } from "vue";
 import WindowButtonGroup from "@/components/WindowButtonGroup/WindowButtonGroup.vue";
+import UserCard from "@/components/UserCard/UserCard.vue";
 import Message from "@/components/Message/Message.vue";
-import LayoutBase from "@/Layout/LayoutBase.vue";
-const contactList = ref([
-  {
-    name: "tom",
-    id: "233",
-  },
-  {
-    name: "clas",
-    id: "123",
-  },
-]);
+import LayoutBase from "@/layout/LayoutBase.vue";
+import { db } from "@/utils/db";
+// import { } from "@/services/socket.js";
+const wsAddr = "ws://localhost:8080/message";
+const id = localStorage.getItem("id");
+const ws = new WebSocket(wsAddr + "?id=" + id);
+
+ws.onopen = evt => {
+  console.log("Connection open ...");
+};
+//接收到消息时触发
+ws.onmessage = evt => {
+  console.log("Received Message: " + evt.data);
+  messages.value.push(JSON.parse(evt.data));
+};
+//连接关闭时触发
+ws.onclose = evt => {
+  console.log("Connection closed.");
+};
+
+const contactList = ref([]);
+const currentContact = ref({});
+
+const getContactList = async () => {
+  let res = await db.contact_list.toArray();
+  contactList.value = res;
+  console.log(contactList.value);
+};
+getContactList();
+
+const sendMessage = async msg => {
+  let message = {
+    to: msg.to,
+    from: id,
+    content: msg.content,
+    time: new Date(),
+  };
+  console.log(message);
+  // await db.friends.where("shoeSize").aboveOrEqual(47).modify({ isBigfoot: 1 });
+  // const david43 = await db.friends.get({name: "David", age: 43});
+
+  ws.send(JSON.stringify(message));
+
+  await db.contact_list.where({ id: msg.to }).modify({
+    // messageList: [...currentContact.value.messageList, message],
+    messageList: currentContact.value.messageList.concat(message),
+  });
+
+  await getContactList();
+
+  // // db.friends.add(message).then(res => {
+  // //   console.log(res);
+  // // });
+  // messages.value.push(message);
+};
 </script>
 <template>
   <WindowButtonGroup></WindowButtonGroup>
@@ -22,28 +67,35 @@ const contactList = ref([
       <div class="w-full h-13 flex-shrink-0 drag flex flex-row-reverse items-center">
         <div class="mr-[14px] px-2">+</div>
       </div>
-      <div class="flex flex-col overflow-auto">
-        <input class="rounded-lg border-transparent mt-1 mx-2 h-8 textInput materialInput p-3 text-sm" type="text" name="" id="" />
+      <div class="flex flex-col h-full overflow-auto">
+        <input
+          class="rounded-lg border-transparent mt-1 mx-2 h-8 textInput materialInput  p-3 text-sm"
+          type="text"
+          placeholder="搜索"
+          name=""
+          id=""
+        />
         <div class="mt-3 px-2 overflow-auto">
-          <div
+          <UserCard
+            @click="currentContact = item"
             v-for="item in contactList"
-            key="item.id"
-            class="flex items-center justify-between materialInput rounded-lg w-full h-16 mb-2 p-2"
-          >
-            <div class="flex items-center">
-              <div class="h-12 w-12 ml-4 bg-gray-600 rounded-full"></div>
-              <div class="ml-2 flex flex-col justify-between h-12">
-                <div class="font-semibold">{{ item.name }}</div>
-                <div class="text-sm text-gray-600">recent</div>
-              </div>
-            </div>
-            <div class="">time</div>
-          </div>
+            key="item.id "
+            :name="item.name"
+            :active="item == currentContact"
+          ></UserCard>
         </div>
       </div>
+      <!-- <div class="flex-shrink-0 flex flex h-28">
+
+      </div> -->
     </template>
     <template #main>
-      <Message></Message>
+      <Message
+        :name="currentContact.name"
+        :id="currentContact.id"
+        :messageList="currentContact.messageList"
+        @sendMessage="sendMessage"
+      ></Message>
     </template>
   </LayoutBase>
 </template>

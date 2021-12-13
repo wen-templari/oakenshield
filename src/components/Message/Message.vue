@@ -1,5 +1,24 @@
 <script setup>
+// when a message is send
+// 1. clear the input field
+// 2. emit sendMessage(content) to index
 import { ref, onBeforeUnmount } from "vue";
+const props = defineProps({
+  messageList: {
+    type: Array,
+    default: [],
+  },
+  name: {
+    type: String,
+    default: "name",
+  },
+  id: {
+    type: Number,
+    default: 0,
+  },
+});
+
+const emits = defineEmits(["sendMessage"]);
 // import { ws } from "@/services/socket.js";
 // interface Message {
 //   from: string;
@@ -8,49 +27,57 @@ import { ref, onBeforeUnmount } from "vue";
 //   time: string;
 // }
 
-const wsAddr = "ws://localhost:8080/message";
-const id = localStorage.getItem("id");
-let ws = new WebSocket(wsAddr + "?id=" + id);
+// import { db } from "@/utils/db.js";
+// const wsAddr = "ws://localhost:8080/message";
+// const id = localStorage.getItem("id");
+// let ws = new WebSocket(wsAddr + "?id=" + id);
 
-ws.onopen = function (evt) {
-  console.log("Connection open ...");
-};
-//接收到消息时触发
-ws.onmessage = function (evt) {
-  console.log("Received Message: " + evt.data);
-  messages.value.push(JSON.parse(evt.data));
-};
-//连接关闭时触发
-ws.onclose = function (evt) {
-  console.log("Connection closed.");
-};
+// ws.onopen = function (evt) {
+//   console.log("Connection open ...");
+// };
+// //接收到消息时触发
+// ws.onmessage = function (evt) {
+//   console.log("Received Message: " + evt.data);
+//   messages.value.push(JSON.parse(evt.data));
+// };
+// //连接关闭时触发
+// ws.onclose = function (evt) {
+//   console.log("Connection closed.");
+// };
 
 let messages = ref([]);
 // let self = "tom";
 
 const inputMessage = ref("");
-const sendMessage = () => {
+const sendMessage = async () => {
   if (inputMessage.value == "") {
     return;
   }
-  let message = {
-    to: "233",
-    from: id,
+  emits("sendMessage", {
+    to: props.id,
     content: inputMessage.value,
-    time: "",
-  };
-  ws.send(JSON.stringify(message));
-  messages.value.push(message);
-  inputMessage.value = "";
+  });
+  // let message = {
+  //   to: "233",
+  //   from: id,
+  //   content: inputMessage.value,
+  //   time: "",
+  // };
+  // // db.friends.add(message).then(res => {
+  // //   console.log(res);
+  // // });
+  // ws.send(JSON.stringify(message));
+  // messages.value.push(message);
+  // inputMessage.value = "";
 };
-onBeforeUnmount(() => {
-  console.log("close");
-  ws.close();
-});
+// onBeforeUnmount(() => {
+//   console.log("close");
+//   ws.close();
+// });
 </script>
 <template>
   <div class="flex flex-col justify-start h-full">
-    <div class="h-13 drag bg-[#f0f2f3] flex items-center justify-center">NAME</div>
+    <div class="h-13 drag bg-[#f0f2f3] flex items-center justify-center">{{ name }}</div>
     <div class="flex-grow flex flex-col p-2">
       <div
         v-for="item in messages"
