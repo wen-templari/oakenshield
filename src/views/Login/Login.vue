@@ -5,6 +5,7 @@ import InputBase from "@/components/Input/InputBase.vue";
 import { Account } from "@/services/api.js";
 import router from "@/router";
 import { ref } from "@vue/reactivity";
+import DBWrapper from "@/utils/db";
 
 const id = ref("");
 const password = ref("");
@@ -15,7 +16,9 @@ const login = () => {
     id: id.value,
     password: password.value,
   }).then(res => {
+    console.log(res);
     localStorage.setItem("id", res.data.id);
+    DBWrapper.init(res.data.id);
     router.push("/");
   });
 };
