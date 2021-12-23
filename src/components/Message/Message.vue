@@ -15,15 +15,8 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  ws: {
-    type: Object,
-    default: null,
-  },
 });
-const { ws } = toRefs(props);
-ws.onmessage = evt => {
-  console.log("Received Message: " + evt.data);
-};
+
 const contact = ref({});
 const setContact = () => {
   id.value = route.params.id;

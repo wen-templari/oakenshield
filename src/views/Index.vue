@@ -12,7 +12,7 @@ const route = useRoute();
 
 const wsAddr = "ws://localhost:8080/message";
 const id = localStorage.getItem("id");
-const ws = new WebSocket(wsAddr + "?id=" + id);
+// const ws = new WebSocket(wsAddr + "?id=" + id);
 const contactList = ref([]);
 const currentContact = ref({});
 
@@ -78,21 +78,20 @@ const setCurrentContact = async contact => {
     await getContactList();
   }
 };
-ws.onopen = evt => {
-  console.log("Connection open ...");
-};
-ws.onmessage = evt => {
-  console.log("Received Message: " + evt.data);
-  let msg = JSON.parse(evt.data);
-  appendMessage(msg.from, msg).then(() => {
-    getContactList();
-  });
-  // messages.value.push(JSON.parse(evt.data));
-};
-ws.onclose = evt => {
-  console.log("Connection closed.");
-};
-
+// ws.onopen = evt => {
+//   console.log("Connection open ...");
+// };
+// ws.onmessage = evt => {
+//   console.log("Received Message: " + evt.data);
+//   let msg = JSON.parse(evt.data);
+//   appendMessage(msg.from, msg).then(() => {
+//     getContactList();
+//   });
+//   // messages.value.push(JSON.parse(evt.data));
+// };
+// ws.onclose = evt => {
+//   console.log("Connection closed.");
+// };
 
 const sendMessage = async msg => {
   let message = {
@@ -101,7 +100,8 @@ const sendMessage = async msg => {
     content: msg.content,
     time: new Date(),
   };
-  ws.send(JSON.stringify(message));
+  window.api.send("sendMessage", message);
+  // ws.send(JSON.stringify(message));
   await appendMessage(msg.to, message);
   await getContactList();
 };
@@ -112,7 +112,8 @@ const getLastMessage = msgList => {
 };
 
 const logout = () => {
-  localStorage.removeItem("id");
+  // localStorage.removeItem("id");
+  localStorage.clear();
   router.push("/login");
 };
 </script>
@@ -169,7 +170,7 @@ const logout = () => {
       </div>
     </template>
     <template #main>
-      <router-view @sendMessage="sendMessage" :ws="ws"></router-view>
+      <router-view @sendMessage="sendMessage"></router-view>
       <!-- <Message
         v-if="currentContact.id != null"
         :name="currentContact.name"

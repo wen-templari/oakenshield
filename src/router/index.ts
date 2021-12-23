@@ -23,7 +23,7 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
   // const target = to.matched[to.matched.length - 1];
   if (token) {
     // login

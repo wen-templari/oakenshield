@@ -18,7 +18,12 @@ const login = () => {
   }).then(res => {
     console.log(res);
     localStorage.setItem("id", res.data.id);
+    localStorage.setItem("token", res.data.token);
     DBWrapper.init(res.data.id);
+    window.api.send("startConn", {
+      id: res.data.id,
+      token: res.data.token,
+    });
     router.push("/");
   });
 };

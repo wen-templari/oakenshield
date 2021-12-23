@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from "vue";
 const props = defineProps({
   closeOnly: {
     type: Boolean,
@@ -6,8 +7,12 @@ const props = defineProps({
   },
 });
 const emitClose = () => {
-  window.api.send("closeLogin");
+  window.api.send("close");
 };
+
+window.api.receive("ping", () => {
+  console.log("received ping");
+});
 </script>
 
 <template>

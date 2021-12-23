@@ -3,6 +3,7 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const WebSocketWrap = require("./websocket");
 
 const NODE_ENV = process.env.NODE_ENV;
 
@@ -61,15 +62,23 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
 
-// 在这个文件中，你可以包含应用程序剩余的所有部分的代码，
-// 也可以拆分成几个文件，然后用 require 导入。
-ipcMain.on("login", (event, arg) => {
-  console.log(arg);
-  mainWindow.setSize(900, 700, true);
-  mainWindow.setResizable(true);
-  event.sender.send("submit-reply", "pong");
+ipcMain.on("close", (event, arg) => {
+  // mainWindow.close();
+  mainWindow.webContents.send("ping", "pong");
 });
 
-ipcMain.on("closeLogin", (event, arg) => {
-  mainWindow.close();
+ipcMain.on("startConn", (event, arg) => {
+  WebSocketWrap.start(arg.id, arg.token);
+  WebSocketWrap.ws.on("open", () => {
+    console.log("connected");
+  });
+  WebSocketWrap.ws.on("message", event => {
+    let message = JSON.parse(event.data);
+    mainWindow.webContents.send("receivedMessage", message);
+  });
+});
+
+ipcMain.on("sendMessage", (event, arg) => {
+  WebSocketWrap.ws.send(JSON.stringify(arg));
+  mainWindow.webContents.send("messageSent", arg);
 });
