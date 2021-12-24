@@ -29,9 +29,9 @@ function createWindow() {
   mainWindow.loadURL(NODE_ENV === "development" ? "http://localhost:3000" : `file://${path.join(__dirname, "../dist/index.html")}`);
   // mainWindow.loadURL(`file://${""}`);
   // 打开开发工具
-  // if (NODE_ENV === "development") {
-  //   mainWindow.webContents.openDevTools();
-  // }
+  if (NODE_ENV === "development") {
+    mainWindow.webContents.openDevTools();
+  }
   // mainWindow.on("resize", function () {
   //   var size = mainWindow.getSize();
   //   var width = size[0];
@@ -71,10 +71,12 @@ ipcMain.on("startConn", (event, arg) => {
   WebSocketWrap.start(arg.id, arg.token);
   WebSocketWrap.ws.on("open", () => {
     console.log("connected");
-  });
-  WebSocketWrap.ws.on("message", event => {
-    let message = JSON.parse(event.data);
-    mainWindow.webContents.send("receivedMessage", message);
+    WebSocketWrap.ws.on("message", event => {
+      let eventString = event.toString();
+      let message = JSON.parse(eventString);
+      console.log("received message", message);
+      mainWindow.webContents.send("receivedMessage", message);
+    });
   });
 });
 

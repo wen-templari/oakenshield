@@ -18,7 +18,6 @@ contextBridge.exposeInMainWorld("api", {
   //   }
   // },
   send: (channel, data) => {
-    console.log(data);
     ipcRenderer.send(channel, data);
   },
   receive: (channel, func) => {

@@ -9,14 +9,6 @@ import db from "@/utils/db";
 
 const self = localStorage.getItem("id");
 const id = ref(route.params.id);
-
-const props = defineProps({
-  message: {
-    type: String,
-    default: "",
-  },
-});
-
 const contact = ref({});
 const setContact = () => {
   id.value = route.params.id;
@@ -27,19 +19,29 @@ const setContact = () => {
 setContact();
 watch(route, setContact);
 
-const emits = defineEmits(["sendMessage"]);
-
 const inputMessage = ref("");
 const sendMessage = async () => {
   if (inputMessage.value == "") {
     return;
   }
-  emits("sendMessage", {
+  let message = {
     from: self,
     to: id.value,
     content: inputMessage.value,
-  });
+  };
+  window.api.send("sendMessage", message);
+  inputMessage.value = "";
+  console.log(contact.value);
+  contact.value.messageList.push(message);
+  await db.appendMessage(id.value, message);
+  setContact();
+
 };
+window.api.receive("messageSent", message => {
+  if (message.from == id.value) {
+    setContact();
+  }
+});
 </script>
 <template>
   <div class="flex flex-col justify-start h-screen">

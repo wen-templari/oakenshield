@@ -10,9 +10,10 @@ import { Account } from "@/services/api.js";
 import { useRoute } from "vue-router";
 const route = useRoute();
 
-const wsAddr = "ws://localhost:8080/message";
+// get contact list at load
+// fresh contact list on messageSent & messageReceived event
+
 const id = localStorage.getItem("id");
-// const ws = new WebSocket(wsAddr + "?id=" + id);
 const contactList = ref([]);
 const currentContact = ref({});
 
@@ -93,6 +94,12 @@ const setCurrentContact = async contact => {
 //   console.log("Connection closed.");
 // };
 
+window.api.receive("messageSent", message => {
+  appendMessage(message.from, message).then(() => {
+    getContactList();
+  });
+});
+
 const sendMessage = async msg => {
   let message = {
     to: msg.to,
@@ -106,13 +113,12 @@ const sendMessage = async msg => {
   await getContactList();
 };
 
-const getLastMessage = msgList => {
-  let lastMessage = msgList[msgList.length - 1];
-  return lastMessage;
-};
+// const getLastMessage = msgList => {
+//   let lastMessage = msgList[msgList.length - 1];
+//   return lastMessage;
+// };
 
 const logout = () => {
-  // localStorage.removeItem("id");
   localStorage.clear();
   router.push("/login");
 };
@@ -170,7 +176,7 @@ const logout = () => {
       </div>
     </template>
     <template #main>
-      <router-view @sendMessage="sendMessage"></router-view>
+      <router-view></router-view>
       <!-- <Message
         v-if="currentContact.id != null"
         :name="currentContact.name"
