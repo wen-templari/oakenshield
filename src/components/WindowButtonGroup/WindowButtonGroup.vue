@@ -10,9 +10,9 @@ const emitClose = () => {
   window.api.send("close");
 };
 
-window.api.receive("ping", () => {
-  console.log("received ping");
-});
+// window.api.receive("ping", () => {
+//   console.log("received ping");
+// });
 </script>
 
 <template>

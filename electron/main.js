@@ -67,6 +67,7 @@ ipcMain.on("close", (event, arg) => {
   mainWindow.webContents.send("ping", "pong");
 });
 
+// establish websocket connection
 ipcMain.on("startConn", (event, arg) => {
   WebSocketWrap.start(arg.id, arg.token);
   WebSocketWrap.ws.on("open", () => {
@@ -80,7 +81,15 @@ ipcMain.on("startConn", (event, arg) => {
   });
 });
 
+// send message via socket
 ipcMain.on("sendMessage", (event, arg) => {
   WebSocketWrap.ws.send(JSON.stringify(arg));
   mainWindow.webContents.send("messageSent", arg);
 });
+
+// const Dexie = require("dexie");
+
+// const db = new Dexie("mydb");
+// db.version(1).stores({
+//   users: "++id, name, email, password, phone, address, city, state, zip, country, avatar, createdAt, updatedAt",
+// });
