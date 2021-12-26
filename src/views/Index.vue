@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import WindowButtonGroup from "@/components/WindowButtonGroup/WindowButtonGroup.vue";
 import UserCard from "@/components/UserCard/UserCard.vue";
-import Message from "@/components/Message/Message.vue";
 import LayoutBase from "@/layout/LayoutBase.vue";
 import DBWrapper from "@/utils/db";
 import router from "@/router";
@@ -29,7 +28,7 @@ const getContactList = async () => {
   if (currentContact.value.id != null) {
     currentContact.value = res.find(c => c.id == currentContact.value.id);
   }
-  console.log(contactList.value);
+  // console.log(contactList.value);
 };
 getContactList();
 
@@ -79,39 +78,20 @@ const setCurrentContact = async contact => {
     await getContactList();
   }
 };
-// ws.onopen = evt => {
-//   console.log("Connection open ...");
-// };
-// ws.onmessage = evt => {
-//   console.log("Received Message: " + evt.data);
-//   let msg = JSON.parse(evt.data);
-//   appendMessage(msg.from, msg).then(() => {
+
+// window.api.receive("messageSent", message => {
+//   appendMessage(message.from, message).then(() => {
 //     getContactList();
 //   });
-//   // messages.value.push(JSON.parse(evt.data));
-// };
-// ws.onclose = evt => {
-//   console.log("Connection closed.");
-// };
+// });
 
-window.api.receive("messageSent", message => {
-  appendMessage(message.from, message).then(() => {
-    getContactList();
-  });
+// window.api.receive("receiveMessage", message => {
+//   console.log(message);
+// });
+
+window.api.receive("updateModel", key => {
+  getContactList();
 });
-
-const sendMessage = async msg => {
-  let message = {
-    to: msg.to,
-    from: msg.from,
-    content: msg.content,
-    time: new Date(),
-  };
-  window.api.send("sendMessage", message);
-  // ws.send(JSON.stringify(message));
-  await appendMessage(msg.to, message);
-  await getContactList();
-};
 
 // const getLastMessage = msgList => {
 //   let lastMessage = msgList[msgList.length - 1];

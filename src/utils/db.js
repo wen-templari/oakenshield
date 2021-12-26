@@ -1,38 +1,6 @@
 import Dexie from "dexie";
 import { ref } from "vue";
 import { Account } from "../services/api";
-// export const db = new Dexie("myDatabase");
-
-// const createDB = name => {
-//   let db = new Dexie(name);
-// };
-
-// db.version(1).stores({
-//   contact_list: "id,name", // Primary key and indexed props
-// });
-
-// const testContact = [
-//   {
-//     id: "123",
-//     name: "clas",
-//     messageList: [],
-//   },
-//   {
-//     id: "233",
-//     name: "tom",
-//     messageList: [],
-//   },
-// ];
-
-// db.contact_list.bulkPut(testContact);
-
-// db.contact_list.each(function (contact) {
-//   console.log(contact.name);
-// });
-
-// db.each("contact_list", (item) => {
-//   console.log(item);
-// })
 
 class DBWrapper {
   constructor() {
@@ -40,26 +8,12 @@ class DBWrapper {
     this.db.version(1).stores({
       contact_list: "id,name", // Primary key and indexed props
     });
-    // const testContact = [
-    //   {
-    //     id: "123",
-    //     name: "clas",
-    //     messageList: [],
-    //   },
-    //   {
-    //     id: "233",
-    //     name: "tom",
-    //     messageList: [],
-    //   },
-    // ];
-
-    // this.db.contact_list.bulkPut(testContact);
   }
 
   init(name) {
     this.db = new Dexie(name);
     this.db.version(1).stores({
-      contact_list: "id,name", // Primary key and indexed props
+      contact_list: "id,name",
     });
   }
 
@@ -96,8 +50,15 @@ class DBWrapper {
   }
 }
 
-const contactList = ref([]);
-
 const db = new DBWrapper();
+
+window.api.receive("appendMessage", async data => {
+  console.log("append");
+  //TODO change here to get appendMessage result and pass to ipc
+  await db.appendMessage(data.key, data.message);
+  // let contactList = await db.getContactList();
+  let contactList;
+  window.api.send("updateModel", data.key);
+});
 
 export default db;

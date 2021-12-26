@@ -42,13 +42,28 @@ function createWindow() {
   //   console.log("height: " + height);
   // });
 }
+// establish websocket connection
+const startWebsocket = (WebSocketWrap, id, token) => {
+  WebSocketWrap.start(id, token);
+  WebSocketWrap.ws.on("open", () => {
+    console.log("connected");
+    WebSocketWrap.ws.on("message", event => {
+      let eventString = event.toString();
+      let message = JSON.parse(eventString);
+      mainWindow.webContents.send("appendMessage", {
+        key: message.from,
+        message: message,
+      });
+      // mainWindow.webContents.send("receivedMessage", message);
+      console.log("received message", message);
+    });
+  });
+};
 
-// 这段程序将会在 Electron 结束初始化
-// 和创建浏览器窗口的时候调用
+// 这段程序将会在 Electron 结束初始化和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
   createWindow();
-
   app.on("activate", function () {
     // 通常在 macOS 上，当点击 dock 中的应用程序图标时，如果没有其他
     // 打开的窗口，那么程序会重新创建一个窗口。
@@ -62,23 +77,15 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
 
+// close window
 ipcMain.on("close", (event, arg) => {
   // mainWindow.close();
   mainWindow.webContents.send("ping", "pong");
 });
 
-// establish websocket connection
+// start websocket
 ipcMain.on("startConn", (event, arg) => {
-  WebSocketWrap.start(arg.id, arg.token);
-  WebSocketWrap.ws.on("open", () => {
-    console.log("connected");
-    WebSocketWrap.ws.on("message", event => {
-      let eventString = event.toString();
-      let message = JSON.parse(eventString);
-      console.log("received message", message);
-      mainWindow.webContents.send("receivedMessage", message);
-    });
-  });
+  startWebsocket(WebSocketWrap, arg.id, arg.token);
 });
 
 // send message via socket
@@ -87,9 +94,6 @@ ipcMain.on("sendMessage", (event, arg) => {
   mainWindow.webContents.send("messageSent", arg);
 });
 
-// const Dexie = require("dexie");
-
-// const db = new Dexie("mydb");
-// db.version(1).stores({
-//   users: "++id, name, email, password, phone, address, city, state, zip, country, avatar, createdAt, updatedAt",
-// });
+ipcMain.on("updateModel", (event, arg) => {
+  mainWindow.webContents.send("updateModel", arg);
+});
