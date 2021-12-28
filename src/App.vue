@@ -1,4 +1,17 @@
-<script setup lang="ts"></script>
+<script setup>
+import db from "@/utils/db";
+import { onMounted } from "vue";
+
+
+// onMounted(() => {
+//   window.api.receive("updateModel", async data => {
+//     // let contactList = await db.getContactList();
+//     console.log("append");
+//     await db.appendMessage(data.key, data.message);
+//     window.api.send("updateModel", data.key);
+//   });
+// });
+</script>
 
 <template>
   <router-view></router-view>

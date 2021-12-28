@@ -1,6 +1,5 @@
 // preload.js
 const { contextBridge, ipcRenderer } = require("electron");
-console.log("hello from preload.js");
 
 contextBridge.exposeInMainWorld("api", {
   // send: (channel, data) => {
@@ -17,6 +16,9 @@ contextBridge.exposeInMainWorld("api", {
   //     ipcRenderer.on(channel, (event, ...args) => func(...args));
   //   }
   // },
+  invoke: async (channel, args) => {
+    return await ipcRenderer.invoke(channel, args);
+  },
   send: (channel, data) => {
     ipcRenderer.send(channel, data);
   },

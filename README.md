@@ -6,8 +6,8 @@
   + [x] structure
 + [ ] reigster
 + [x] search user
-+ [ ] refine dbWrapper
-+ [ ] separate ipa at electron/main
++ [ ] separate data between instences
++ [ ] offine message
 + [ ] test chat between different client
 + [ ] file
 
@@ -40,7 +40,7 @@
   });
   ```
 ## 接收信息
-1. /electrom/main.js
+1. /electron/main.js
    ```js
    const startWebsocket = (WebSocketWrap, id, token) => {
     WebSocketWrap.start(id, token);

@@ -52,13 +52,16 @@ class DBWrapper {
 
 const db = new DBWrapper();
 
+import { onMounted } from "vue";
+
+// onMounted(() => {
 window.api.receive("appendMessage", async data => {
   console.log("append");
   //TODO change here to get appendMessage result and pass to ipc
   await db.appendMessage(data.key, data.message);
   // let contactList = await db.getContactList();
   let contactList;
-  window.api.send("updateModel", data.key);
+  window.api.send("updateModel", data.message.from);
 });
-
+// });
 export default db;

@@ -57,7 +57,8 @@ window.api.receive("messageSent", message => {
   }
 });
 window.api.receive("updateModel", key => {
-  if(key==self){
+  console.log(key,id.value)
+  if(key==id.value){
     setContact();
   }
 });

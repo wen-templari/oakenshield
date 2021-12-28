@@ -7,6 +7,12 @@ const WebSocketWrap = require("./websocket");
 
 const NODE_ENV = process.env.NODE_ENV;
 
+// const a = require("electron").remote.app;
+let appPath = app.getAppPath();
+
+let targetPath = path.join(appPath, "data");
+// app.setPath("userData", targetPath);
+
 let mainWindow;
 
 function createWindow() {
@@ -22,12 +28,8 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-
-  // mainWindow.loadFile("/Users/clas/erebor/oakenshield/dist/index.html");
-  console.log(path.join(__dirname, "../dist/index.html"));
   // 加载 index.html
   mainWindow.loadURL(NODE_ENV === "development" ? "http://localhost:3000" : `file://${path.join(__dirname, "../dist/index.html")}`);
-  // mainWindow.loadURL(`file://${""}`);
   // 打开开发工具
   if (NODE_ENV === "development") {
     mainWindow.webContents.openDevTools();
@@ -42,6 +44,7 @@ function createWindow() {
   //   console.log("height: " + height);
   // });
 }
+
 // establish websocket connection
 const startWebsocket = (WebSocketWrap, id, token) => {
   WebSocketWrap.start(id, token);
