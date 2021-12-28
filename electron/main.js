@@ -49,7 +49,7 @@ function createWindow() {
 const startWebsocket = (WebSocketWrap, id, token) => {
   WebSocketWrap.start(id, token);
   WebSocketWrap.ws.on("open", () => {
-    console.log("connected");
+    // console.log("connected");
     WebSocketWrap.ws.on("message", event => {
       let eventString = event.toString();
       let message = JSON.parse(eventString);
@@ -94,6 +94,7 @@ ipcMain.on("full", (event, arg) => {
   mainWindow.setFullScreen(!mainWindow.isFullScreen());
   console.log("full");
 });
+
 // start websocket
 ipcMain.on("startConn", (event, arg) => {
   startWebsocket(WebSocketWrap, arg.id, arg.token);
@@ -107,4 +108,8 @@ ipcMain.on("sendMessage", (event, arg) => {
 
 ipcMain.on("updateModel", (event, arg) => {
   mainWindow.webContents.send("updateModel", arg);
+});
+
+ipcMain.on("logout", (event, arg) => {
+  WebSocketWrap.close();
 });

@@ -13,6 +13,11 @@ const route = useRoute();
 
 const id = localStorage.getItem("id");
 const name = localStorage.getItem("name");
+const token = localStorage.getItem("token");
+window.api.send("startConn", {
+  id: id,
+  token: token,
+});
 const contactList = ref([]);
 const currentContact = ref({});
 
@@ -43,7 +48,6 @@ const listToRender = computed(() => {
     res = contactList.value;
   }
   for (let i in res) {
-    // console.log(res[i].messageList[res[i].messageList.length - 1]);
     if (res[i].messageList) {
       res[i].lastMessage = res[i].messageList[res[i].messageList.length - 1] || {};
     }
@@ -89,26 +93,11 @@ const setCurrentContact = async contact => {
   }
 };
 
-// window.api.receive("messageSent", message => {
-//   appendMessage(message.from, message).then(() => {
-//     getContactList();
-//   });
-// });
-
-// window.api.receive("receiveMessage", message => {
-//   console.log(message);
-// });
-
 window.api.receive("updateModel", key => {
   getContactList();
 });
-
-// const getLastMessage = msgList => {
-//   let lastMessage = msgList[msgList.length - 1];
-//   return lastMessage;
-// };
-
 const logout = () => {
+  window.api.send("logout");
   localStorage.clear();
   router.push("/login");
 };
