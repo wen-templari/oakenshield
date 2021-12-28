@@ -30,17 +30,18 @@ class DBWrapper {
   }
 
   async getContact(id) {
-    let contact = await this.db.contact_list.get({ id: id });
-    return contact;
+    return await this.db.contact_list.get({ id: id });
   }
 
   async appendMessage(id, message) {
     let messageString = JSON.stringify(message);
     let copiedMessage = JSON.parse(messageString);
     let contactToAppend = await this.db.contact_list.get({ id: id });
-    if (contactToAppend.length == 0) {
-      let contact = await Account.search(id);
-      this.addContact(content);
+    if (contactToAppend === undefined) {
+      await Account.search(id).then(res => {
+        this.addContact(res.data);
+        contactToAppend.messageList = [];
+      });
     }
     contactToAppend.messageList.push(copiedMessage);
     console.log("contactToAppend", contactToAppend);
@@ -48,20 +49,20 @@ class DBWrapper {
       messageList: contactToAppend.messageList,
     });
   }
+
+  async setOfflineMessage(messages) {
+    for (let item of messages) {
+      await this.appendMessage(item.from, item);
+    }
+  }
 }
 
 const db = new DBWrapper();
-
-import { onMounted } from "vue";
-
-// onMounted(() => {
 window.api.receive("appendMessage", async data => {
   console.log("append");
   //TODO change here to get appendMessage result and pass to ipc
   await db.appendMessage(data.key, data.message);
   // let contactList = await db.getContactList();
-  let contactList;
   window.api.send("updateModel", data.message.from);
 });
-// });
 export default db;

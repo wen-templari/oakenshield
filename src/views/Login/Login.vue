@@ -5,7 +5,7 @@ import InputBase from "@/components/Input/InputBase.vue";
 import { Account } from "@/services/api.js";
 import router from "@/router";
 import { ref } from "@vue/reactivity";
-import DBWrapper from "@/utils/db";
+import DB from "@/utils/db";
 
 const id = ref("");
 const password = ref("");
@@ -15,11 +15,15 @@ const login = () => {
   Account.login({
     id: id.value,
     password: password.value,
-  }).then(res => {
+  }).then(async res => {
     console.log(res);
     localStorage.setItem("id", res.data.id);
+    localStorage.setItem("name", res.data.name);
     localStorage.setItem("token", res.data.token);
-    DBWrapper.init(res.data.id);
+    DB.init(res.data.id);
+    if (res.data.offlineMessage) {
+      await DB.setOfflineMessage(res.data.offlineMessage);
+    }
     window.api.send("startConn", {
       id: res.data.id,
       token: res.data.token,

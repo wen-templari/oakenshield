@@ -13,6 +13,7 @@ const route = useRoute();
 // fresh contact list on messageSent & messageReceived event
 
 const id = localStorage.getItem("id");
+const name = localStorage.getItem("name");
 const contactList = ref([]);
 const currentContact = ref({});
 
@@ -28,36 +29,45 @@ const getContactList = async () => {
   if (currentContact.value.id != null) {
     currentContact.value = res.find(c => c.id == currentContact.value.id);
   }
-  // console.log(contactList.value);
+  console.log(contactList.value);
 };
 getContactList();
 
-const addSwitch = ref(false);
+// const addSwitch = ref(false);
 const searchInput = ref();
 const searchList = ref([]);
 const listToRender = computed(() => {
-  if (addSwitch.value) {
-    return searchList.value;
+  let res;
+  if (searchList.value.length > 0) {
+    res = searchList.value;
   } else {
-    return contactList.value;
+    res = contactList.value;
   }
+  for (let i in res) {
+    // console.log(res[i].messageList[res[i].messageList.length - 1]);
+    if (res[i].messageList) {
+      res[i].lastMessage = res[i].messageList[res[i].messageList.length - 1] || {};
+    }
+  }
+  console.log(res);
+  return res;
 });
 const searchInputHandler = e => {
-  if (addSwitch.value) {
-    Account.search(searchInput.value).then(res => {
-      console.log(res);
-      searchList.value.push(res.data);
-    });
-  }
-};
-const switchAdd = v => {
-  if (v != null) {
-    addSwitch.value = v;
-  } else {
-    addSwitch.value = !addSwitch.value;
-  }
+  searchList.value = [];
+  Account.search(searchInput.value).then(res => {
+    searchList.value.push(res.data);
+  });
   searchInput.value = "";
 };
+
+// const switchAdd = v => {
+//   if (v != null) {
+//     addSwitch.value = v;
+//   } else {
+//     addSwitch.value = !addSwitch.value;
+//   }
+//   searchInput.value = "";
+// };
 
 const selectedItem = computed(() => {
   let fullPath = route.path;
@@ -74,6 +84,7 @@ const setCurrentContact = async contact => {
       return contact.id == currentContact.value.id;
     }).length == 0
   ) {
+    searchList.value = [];
     await DBWrapper.addContact(currentContact.value);
     await getContactList();
   }
@@ -111,7 +122,7 @@ const logout = () => {
       <div class="flex flex-col h-full overflow-auto">
         <div class="flex mx-2 mt-1">
           <input
-            class="rounded-lg border-transparent mr-2 h-8 textInput materialInput p-3 text-sm w-full"
+            class="rounded-lg border-transparent h-8 textInput materialInput p-3 text-sm w-full"
             type="text"
             placeholder="搜索"
             name=""
@@ -119,7 +130,7 @@ const logout = () => {
             v-model="searchInput"
             @focusout="searchInputHandler"
           />
-          <div class="h-8 w-8 flex-shrink-0 materialInput rounded-lg cursor-pointer flex items-center justify-center">
+          <!-- <div class="h-8 w-8 flex-shrink-0 materialInput rounded-lg cursor-pointer flex items-center justify-center">
             <div v-if="!addSwitch" @click="switchAdd">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -136,34 +147,31 @@ const logout = () => {
                 />
               </svg>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="mt-3 px-2 overflow-auto">
-          <div v-if="listToRender.length == 0 && addSwitch" class="text-center textDescription">输入ID来添加对话</div>
+          <!-- <div v-if="listToRender.length == 0 && addSwitch" class="text-center textDescription">输入ID来添加对话</div> -->
           <UserCard
             @click="setCurrentContact(item)"
             v-for="item in listToRender"
             key="item.id "
             :name="item.name"
             :id="item.id"
+            :lastMessage="item.lastMessage"
             :active="item.id == selectedItem"
           ></UserCard>
         </div>
       </div>
-      <div class="flex-shrink-0 flex items-center justify-between h-18 px-8">
-        <div class="">{{ id }}</div>
-        <button class="btnxs btnWarning text-center" @click="logout">logout</button>
+      <div class="flex-shrink-0 flex items-end justify-between pb-3 px-4">
+        <div class="p-1">
+          <span class="font-semibold">{{ name }}</span>
+          <span class="ml-1 textDescription">({{ id }})</span>
+        </div>
+        <button class="text-center text-sm font-semibold rounded p-0.5 mb-0.5 hover:(bg-white/40 )" @click="logout">登出</button>
       </div>
     </template>
     <template #main>
       <router-view></router-view>
-      <!-- <Message
-        v-if="currentContact.id != null"
-        :name="currentContact.name"
-        :id="currentContact.id"
-        :messageList="currentContact.messageList"
-        @sendMessage="sendMessage"
-      ></Message> -->
     </template>
   </LayoutBase>
 </template>

@@ -28,7 +28,7 @@
           center ? 'text-center' : '',
           disabled ? ' bg-opacity-0 border-gray-400/60 shadow-none cursor-default pointer-events-none' : 'border-gray-400/10',
         ]"
-        class="transition duration-100 p-2 w-full rounded-lg shadow-innersm materialInput"
+        class="transition duration-100 p-2 w-full rounded-lg shadow-innersm materialInput hover:(border-gray-300)"
         :required="required"
         :placeholder="placeholder"
         v-model.lazy="input"
