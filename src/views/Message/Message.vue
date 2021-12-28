@@ -77,8 +77,8 @@ window.api.receive("updateModel", key => {
     </div>
     <div class="h-12 flex-shrink-0 px-2 pt-2 flex items-start justify-around">
       <!-- <div>123</div> -->
-      <input v-model="inputMessage" class="textInput rounded-full h-7 mr-2 w-full" type="text" />
-      <button class="btn btnxs btnPrimary h-7" @click="sendMessage()">send</button>
+      <input v-model="inputMessage" class="textInput rounded-full h-7 mr-2 w-full" type="text" @keypress.enter="sendMessage()" maxlength="40" />
+      <button class="btn btnxs btnPrimary h-7" @click="sendMessage() ">send</button>
     </div>
   </div>
 </template>

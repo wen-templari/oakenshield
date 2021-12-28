@@ -7,17 +7,15 @@ const props = defineProps({
   },
 });
 const emit = e => {
+  console.log(e);
   window.api.send(e);
 };
 
-// window.api.receive("ping", () => {
-//   console.log("received ping");
-// });
 </script>
 
 <template>
-  <div class="absolute h-13 flex justify-start items-center">
-    <div class="flex ml-[14px] hover:(bg-black)">
+  <div class="absolute  z-50 h-13 flex justify-start items-center  ">
+    <div class="flex ml-[14px] ">
       <div class="actionBtn bg-red-500" @click="emit('close')"></div>
       <div v-if="!closeOnly" class="actionBtn bg-yellow-300" @click="emit('minimize')"></div>
       <div v-if="!closeOnly" class="actionBtn bg-yellow-500" @click="emit('full')"></div>

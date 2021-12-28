@@ -40,7 +40,10 @@ class DBWrapper {
     if (contactToAppend === undefined) {
       await Account.search(id).then(res => {
         this.addContact(res.data);
-        contactToAppend.messageList = [];
+        contactToAppend = {
+          messageList: [],
+        };
+        // contactToAppend.messageList = [];
       });
     }
     contactToAppend.messageList.push(copiedMessage);

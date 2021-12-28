@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed } from "vue";
-import WindowButtonGroup from "@/components/WindowButtonGroup/WindowButtonGroup.vue";
 import UserCard from "@/components/UserCard/UserCard.vue";
 import LayoutBase from "@/layout/LayoutBase.vue";
 import DBWrapper from "@/utils/db";
@@ -115,10 +114,8 @@ const logout = () => {
 };
 </script>
 <template>
-  <WindowButtonGroup></WindowButtonGroup>
   <LayoutBase>
     <template #side>
-      <div class="w-full h-13 flex-shrink-0 drag flex flex-row-reverse items-center"></div>
       <div class="flex flex-col h-full overflow-auto">
         <div class="flex mx-2 mt-1">
           <input
@@ -175,12 +172,3 @@ const logout = () => {
     </template>
   </LayoutBase>
 </template>
-<style>
-.drag {
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
-}
-.no-drag {
-  -webkit-app-region: no-drag;
-}
-</style>

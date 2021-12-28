@@ -1,5 +1,4 @@
 <script setup>
-import WindowButtonGroup from "@/components/WindowButtonGroup/WindowButtonGroup.vue";
 import LayoutBase from "@/layout/LayoutBase.vue";
 import InputBase from "@/components/Input/InputBase.vue";
 import { Account } from "@/services/api.js";
@@ -24,10 +23,8 @@ const switchToRegister = () => {
 };
 </script>
 <template>
-  <WindowButtonGroup></WindowButtonGroup>
   <LayoutBase>
     <template #side>
-      <div class="w-full h-13 drag"></div>
       <div class="flex flex-col items-center h-full border">
         <div class="h-1/4 flex flex-col justify-center">
           <div class="text-center text-3xl font-semibold tracking-wide mt-10">OakenShield</div>

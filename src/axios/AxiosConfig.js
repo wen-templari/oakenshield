@@ -1,7 +1,5 @@
 import axios from "axios";
-import qs from "qs";
 // import Notify from "@/components/Notify";
-// axios.defaults.baseURL = "/api";
 axios.defaults.baseURL = process.env.NODE_ENV === "development" ? "/api" : "http://localhost:8080/";
 
 // axios.defaults.baseURL =
@@ -23,14 +21,6 @@ axios.interceptors.request.use(
               return "args=" + JSON.stringify(data);
             },
           ];
-          break;
-        case "FORM":
-          config.headers["Content-Type"] = "application/x-www-form-urlencoded";
-          config.data = qs.stringify(config.data);
-          break;
-        case "FORM":
-          config.headers["Content-Type"] = "application/x-www-form-urlencoded";
-          config.data = qs.stringify(config.data);
           break;
         default:
           break;
@@ -138,37 +128,3 @@ export default function axiosApi(url, data, method) {
     }
   });
 }
-
-// {
-//   post(url, data) {
-//     return new Promise((resolve, reject) => {
-//       axios({
-//         method: "post",
-//         url,
-//         data: qs.stringify(data),
-//       })
-//         .then((res) => {
-//           resolve(res.data);
-//         })
-//         .catch((err) => {
-//           reject(err);
-//         });
-//     });
-//   },
-
-//   get(url, data) {
-//     return new Promise((resolve, reject) => {
-//       axios({
-//         method: "get",
-//         url,
-//         params: data,
-//       })
-//         .then((res) => {
-//           resolve(res.data);
-//         })
-//         .catch((err) => {
-//           reject(err);
-//         });
-//     });
-//   },
-// };
