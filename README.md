@@ -4,10 +4,13 @@
 ## todos
 + [x] presist
   + [x] structure
-+ [ ] reigster
++ [ ] reigster?
 + [x] search user
-+ [ ] separate data between instences
-+ [ ] offine message
++ [x] ~~separate data between instences~~ 
++ [x] offine message
++ [ ] login hints
++ [ ] add notifier
++ [ ] window button group
 + [ ] test chat between different client
 + [ ] file
 

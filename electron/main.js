@@ -82,10 +82,19 @@ app.on("window-all-closed", function () {
 
 // close window
 ipcMain.on("close", (event, arg) => {
-  // mainWindow.close();
+  mainWindow.close();
   mainWindow.webContents.send("ping", "pong");
 });
 
+ipcMain.on("minimize", (event, arg) => {
+  mainWindow.minimize();
+  mainWindow.webContents.send("ping", "pong");
+});
+
+ipcMain.on("full", (event, arg) => {
+  mainWindow.setFullScreen(!mainWindow.isFullScreen());
+  mainWindow.webContents.send("ping", "pong");
+});
 // start websocket
 ipcMain.on("startConn", (event, arg) => {
   startWebsocket(WebSocketWrap, arg.id, arg.token);

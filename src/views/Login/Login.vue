@@ -16,7 +16,6 @@ const login = () => {
     id: id.value,
     password: password.value,
   }).then(async res => {
-    console.log(res);
     localStorage.setItem("id", res.data.id);
     localStorage.setItem("name", res.data.name);
     localStorage.setItem("token", res.data.token);

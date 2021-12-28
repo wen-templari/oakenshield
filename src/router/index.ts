@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Index from "@/views/Index.vue";
 import Login from "@/views/Login/Login.vue";
-import Message from "@/components/Message/Message.vue";
+import Message from "@/views/Message/Message.vue";
 
 const routes = [
   {
