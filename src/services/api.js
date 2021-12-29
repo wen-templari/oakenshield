@@ -2,14 +2,23 @@ import axiosApi from "@/axios/AxiosConfig";
 
 const Account = {
   async login(account) {
-    return await axiosApi("/login", account, "post");
+    return await axiosApi("/user/login", account, "post");
   },
   async register(account) {
-    return await axiosApi("/register", account, "post");
+    return await axiosApi("/user", account, "post");
   },
-  async search(id) {
-    return await axiosApi("/search?id=" + id, null, "get");
+  async get(id) {
+    return await axiosApi("/user?id=" + id, null, "get");
+  },
+  async updateAvatar(id, e) {
+    return await axiosApi("/user/" + id + "/avatar", e, "post");
   },
 };
 
-export { Account };
+const File = {
+  async upload(e) {
+    return await axiosApi("/file", e, "post");
+  },
+};
+
+export { Account, File };

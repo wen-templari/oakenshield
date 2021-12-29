@@ -4,16 +4,18 @@ import UserCard from "@/components/UserCard/UserCard.vue";
 import LayoutBase from "@/layout/LayoutBase.vue";
 import DBWrapper from "@/utils/db";
 import router from "@/router";
+import DateFormat from "@/utils/dateFormat.js";
 import { Account } from "@/services/api.js";
 import { useRoute } from "vue-router";
 const route = useRoute();
 
 // get contact list at load
-// fresh contact list on messageSent & messageReceived event
+// fresh contact list on modelUpdate & messageReceived event
 
 const id = localStorage.getItem("id");
 const name = localStorage.getItem("name");
 const token = localStorage.getItem("token");
+let avatar = localStorage.getItem("avatar");
 window.api.send("startConn", {
   id: id,
   token: token,
@@ -21,23 +23,16 @@ window.api.send("startConn", {
 const contactList = ref([]);
 const currentContact = ref({});
 
-const appendMessage = async (id, msg) => {
-  await DBWrapper.appendMessage(id, msg).then(res => {
-    DBWrapper.getContactList();
-  });
-};
-
 const getContactList = async () => {
   let res = await DBWrapper.getContactList();
   contactList.value = res;
   if (currentContact.value.id != null) {
     currentContact.value = res.find(c => c.id == currentContact.value.id);
   }
-  console.log(contactList.value);
 };
 getContactList();
 
-// const addSwitch = ref(false);
+// search to add new contact
 const searchInput = ref();
 const searchList = ref([]);
 const listToRender = computed(() => {
@@ -50,27 +45,18 @@ const listToRender = computed(() => {
   for (let i in res) {
     if (res[i].messageList) {
       res[i].lastMessage = res[i].messageList[res[i].messageList.length - 1] || {};
+      res[i].lastMessage.time = DateFormat(res[i].lastMessage.time);
     }
   }
-  console.log(res);
   return res;
 });
 const searchInputHandler = e => {
   searchList.value = [];
-  Account.search(searchInput.value).then(res => {
+  Account.get(searchInput.value).then(res => {
     searchList.value.push(res.data);
   });
   searchInput.value = "";
 };
-
-// const switchAdd = v => {
-//   if (v != null) {
-//     addSwitch.value = v;
-//   } else {
-//     addSwitch.value = !addSwitch.value;
-//   }
-//   searchInput.value = "";
-// };
 
 const selectedItem = computed(() => {
   let fullPath = route.path;
@@ -92,7 +78,15 @@ const setCurrentContact = async contact => {
     await getContactList();
   }
 };
-
+const updateAvatar = event => {
+  let file = event.target.files[0];
+  let param = new FormData();
+  param.append("upload", file);
+  Account.updateAvatar(id, param).then(res => {
+    localStorage.setItem("avatar", res.data.path);
+    avatar = res.data.path;
+  });
+};
 window.api.receive("updateModel", key => {
   getContactList();
 });
@@ -116,44 +110,30 @@ const logout = () => {
             v-model="searchInput"
             @focusout="searchInputHandler"
           />
-          <!-- <div class="h-8 w-8 flex-shrink-0 materialInput rounded-lg cursor-pointer flex items-center justify-center">
-            <div v-if="!addSwitch" @click="switchAdd">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M7.63672 14.6562H12.998V20.0176C12.998 20.5625 13.4463 21.0195 14 21.0195C14.5537 21.0195 15.002 20.5625 15.002 20.0176V14.6562H20.3633C20.9082 14.6562 21.3652 14.208 21.3652 13.6543C21.3652 13.1006 20.9082 12.6523 20.3633 12.6523H15.002V7.29102C15.002 6.74609 14.5537 6.28906 14 6.28906C13.4463 6.28906 12.998 6.74609 12.998 7.29102V12.6523H7.63672C7.0918 12.6523 6.63477 13.1006 6.63477 13.6543C6.63477 14.208 7.0918 14.6562 7.63672 14.6562Z"
-                  fill="#1C1C1E"
-                />
-              </svg>
-            </div>
-            <div v-if="addSwitch" @click="switchAdd">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M8.31348 17.9346C7.94434 18.3037 7.92676 18.9629 8.32227 19.3408C8.7002 19.7363 9.36816 19.7188 9.7373 19.3496L14 15.0869L18.2627 19.3496C18.6406 19.7275 19.291 19.7363 19.6689 19.3408C20.0645 18.9629 20.0557 18.3037 19.6777 17.9258L15.415 13.6631L19.6777 9.40918C20.0557 9.02246 20.0645 8.37207 19.6689 7.99414C19.291 7.59863 18.6406 7.60742 18.2627 7.98535L14 12.248L9.7373 7.98535C9.36816 7.61621 8.7002 7.59863 8.32227 7.99414C7.92676 8.37207 7.94434 9.03125 8.31348 9.40039L12.5762 13.6631L8.31348 17.9346Z"
-                  fill="#1C1C1E"
-                />
-              </svg>
-            </div>
-          </div> -->
         </div>
         <div class="mt-3 px-2 overflow-auto">
-          <!-- <div v-if="listToRender.length == 0 && addSwitch" class="text-center textDescription">输入ID来添加对话</div> -->
           <UserCard
             @click="setCurrentContact(item)"
             v-for="item in listToRender"
             key="item.id "
-            :name="item.name"
             :id="item.id"
+            :name="item.name"
+            :avatar="item.avatar"
             :lastMessage="item.lastMessage"
             :active="item.id == selectedItem"
           ></UserCard>
         </div>
       </div>
       <div class="flex-shrink-0 flex items-end justify-between pb-3 px-4">
-        <div class="p-1">
-          <span class="font-semibold">{{ name }}</span>
+        <div class="flex items-end p-1">
+          <label class="relative textLink text-xs self-end cursor-pointer rounded-xl">
+            <img class="h-10 w-10 mb-0.5 bg-black rounded-full" :src="avatar" />
+            <input id="file-upload" type="file" class="sr-only" accept="image/*" @change="updateAvatar" />
+          </label>
+          <span class="font-semibold ml-1">{{ name }}</span>
           <span class="ml-1 textDescription">({{ id }})</span>
         </div>
-        <button class="text-center text-sm font-semibold rounded p-0.5 mb-0.5 hover:(bg-white/40 )" @click="logout">登出</button>
+        <button class="text-center text-sm font-semibold rounded px-1 p-0.5 mb-0.5 hover:(bg-gray-400/40 )" @click="logout">登出</button>
       </div>
     </template>
     <template #main>

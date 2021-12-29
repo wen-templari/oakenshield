@@ -80,7 +80,7 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
 
-// close window
+// window button
 ipcMain.on("close", (event, arg) => {
   mainWindow.close();
 });
@@ -103,7 +103,7 @@ ipcMain.on("startConn", (event, arg) => {
 // send message via socket
 ipcMain.on("sendMessage", (event, arg) => {
   WebSocketWrap.ws.send(JSON.stringify(arg));
-  mainWindow.webContents.send("messageSent", arg);
+  mainWindow.webContents.send("updateModel", arg.from);
 });
 
 ipcMain.on("updateModel", (event, arg) => {

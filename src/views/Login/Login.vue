@@ -18,6 +18,7 @@ const login = () => {
     localStorage.setItem("id", res.data.id);
     localStorage.setItem("name", res.data.name);
     localStorage.setItem("token", res.data.token);
+    localStorage.setItem("avatar", res.data.avatar);
     DB.init(res.data.id);
     if (res.data.offlineMessage) {
       await DB.setOfflineMessage(res.data.offlineMessage);
@@ -62,7 +63,7 @@ const register = _ => {
           <InputBase class="my-2 w-full" v-model:content="password" placeholder="密码" type="password" />
           <button class="mt-6 btn btnPrimary w-full" @click.prevent="login">登入</button>
           <div class="mt-5 flex flex-col items-center text-center">
-            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="switchregisterSwitch(true)">没有账号?</div>
+            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="switchRegister(true)">没有账号?</div>
           </div>
         </form>
         <form class="flex flex-col p-5 mt-15 w-full" v-if="registerSwitch">
@@ -70,7 +71,7 @@ const register = _ => {
           <InputBase class="my-2 w-full" v-model:content="password" placeholder="密码" type="password" />
           <button class="mt-6 btn btnPrimary w-full" @click.prevent="register">注册</button>
           <div class="mt-5 flex flex-col items-center text-center">
-            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="switchregisterSwitch(false)">有账号了</div>
+            <div class="w-20 text-indigo-700 text-sm font-semibold cursor-pointer" @click="switchRegister(false)">有账号了</div>
           </div>
         </form>
         <div></div>

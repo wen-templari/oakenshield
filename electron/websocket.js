@@ -20,8 +20,10 @@ class WebSocketWrap {
   }
   heartbeat(message) {
     setTimeout(() => {
-      this.ws.send(message);
-      this.heartbeat(message);
+      if (this.ws.readyState == 1) {
+        this.ws.send(message);
+        this.heartbeat(message);
+      }
     }, 2000);
   }
   close() {

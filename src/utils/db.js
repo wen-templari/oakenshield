@@ -6,7 +6,7 @@ class DBWrapper {
   constructor() {
     this.db = new Dexie(localStorage.getItem("id"));
     this.db.version(1).stores({
-      contact_list: "id,name", // Primary key and indexed props
+      contact_list: "id,name,avatar", // Primary key and indexed props
     });
   }
 
@@ -21,7 +21,9 @@ class DBWrapper {
     var objString = JSON.stringify(contact);
     var temp = JSON.parse(objString);
     temp.messageList = [];
-    return await this.db.contact_list.add(temp);
+    if (temp.id != null) {
+      return await this.db.contact_list.add(temp);
+    }
   }
 
   async getContactList() {
@@ -38,7 +40,7 @@ class DBWrapper {
     let copiedMessage = JSON.parse(messageString);
     let contactToAppend = await this.db.contact_list.get({ id: id });
     if (contactToAppend === undefined) {
-      await Account.search(id).then(res => {
+      await Account.get(id).then(res => {
         this.addContact(res.data);
         contactToAppend = {
           messageList: [],
@@ -47,7 +49,7 @@ class DBWrapper {
       });
     }
     contactToAppend.messageList.push(copiedMessage);
-    console.log("contactToAppend", contactToAppend);
+    // console.log("contactToAppend", contactToAppend);
     return this.db.contact_list.where({ id: id }).modify({
       messageList: contactToAppend.messageList,
     });
@@ -62,10 +64,7 @@ class DBWrapper {
 
 const db = new DBWrapper();
 window.api.receive("appendMessage", async data => {
-  console.log("append");
-  //TODO change here to get appendMessage result and pass to ipc
   await db.appendMessage(data.key, data.message);
-  // let contactList = await db.getContactList();
   window.api.send("updateModel", data.message.from);
 });
 export default db;

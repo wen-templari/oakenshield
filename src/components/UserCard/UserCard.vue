@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, toRefs, computed } from "vue";
 
 const props = defineProps({
   name: String,
   id: String,
+  avatar: String,
   lastMessage: {
     type: Object,
     default: {},
@@ -13,7 +14,14 @@ const props = defineProps({
     default: false,
   },
 });
-
+const { lastMessage } = toRefs(props);
+const message = computed(() => {
+  let ans = lastMessage.value;
+  if (ans.type == "img") {
+    ans.content = "[图片]";
+  }
+  return ans;
+});
 </script>
 <template>
   <div
@@ -21,17 +29,17 @@ const props = defineProps({
     :class="[active ? 'materialInput' : '']"
   >
     <div class="flex items-center">
-      <!-- <div class="h-12 w-12  bg-gray-600 rounded-full"></div> -->
+      <img class="h-11 w-11 rounded-full" :src="avatar" />
       <div class="ml-2 flex flex-col justify-between h-14">
         <div class="font-semibold">
           <b>
             {{ name }}
           </b>
-          <b class="textDescription"> ({{ id }})</b>
+          <b class="text-xs textDescription"> ({{ id }})</b>
         </div>
-        <div class="text-sm text-gray-600">{{ lastMessage.content }}</div>
+        <div class="text-sm text-gray-600">{{ message.content }}</div>
       </div>
     </div>
-    <div class="text-xs mt-0.5 textDescription">{{ lastMessage.time }}</div>
+    <div class="text-xs mt-0.5 textDescription">{{ message.time }}</div>
   </div>
 </template>
