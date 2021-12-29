@@ -5,7 +5,6 @@ import WindiCSS from "vite-plugin-windicss";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // base: path.resolve("./"),
   plugins: [vue(), WindiCSS()],
   resolve: {
     alias: {
@@ -16,7 +15,7 @@ export default defineConfig({
     host: "0.0.0.0",
     proxy: {
       "^/api": {
-        target: "http://localhost:8080",
+        target: "http://localhost:23213",
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ""),
       },

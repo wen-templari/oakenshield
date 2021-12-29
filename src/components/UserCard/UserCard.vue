@@ -1,6 +1,7 @@
 <script setup>
 import { ref, toRefs, computed } from "vue";
 
+const AvatarHolder = "https://erebor.oss-cn-hangzhou.aliyuncs.com/1640782786961";
 const props = defineProps({
   name: String,
   id: String,
@@ -20,6 +21,11 @@ const message = computed(() => {
   if (ans.type == "img") {
     ans.content = "[图片]";
   }
+  if (ans.time != "") {
+    let date = new Date(ans.time);
+    ans.date = date.getMonth() + "/" + date.getDate();
+    ans.time = date.getHours() + ":" + date.getMinutes();
+  }
   return ans;
 });
 </script>
@@ -29,7 +35,7 @@ const message = computed(() => {
     :class="[active ? 'materialInput' : '']"
   >
     <div class="flex items-center">
-      <img class="h-11 w-11 rounded-full" :src="avatar" />
+      <img class="h-11 w-11 rounded-full" :src="avatar || AvatarHolder" />
       <div class="ml-2 flex flex-col justify-between h-14">
         <div class="font-semibold">
           <b>
@@ -40,6 +46,9 @@ const message = computed(() => {
         <div class="text-sm text-gray-600">{{ message.content }}</div>
       </div>
     </div>
-    <div class="text-xs mt-0.5 textDescription">{{ message.time }}</div>
+    <div class="text-xs mt-0.5 textDescription text-right">
+      <div class="">{{ message.time }}</div>
+      <div class="">{{ message.date }}</div>
+    </div>
   </div>
 </template>

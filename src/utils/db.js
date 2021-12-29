@@ -52,6 +52,7 @@ class DBWrapper {
     let copiedMessage = JSON.parse(messageString);
     let contactToAppend = await this.db.contact_list.get({ id: id });
     if (contactToAppend === undefined) {
+      console.log("getting ", id);
       await Account.get(id).then(res => {
         this.addContact(res.data);
         contactToAppend = {

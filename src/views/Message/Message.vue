@@ -116,7 +116,7 @@ window.api.receive("updateModel", key => {
     <div class="h-12 flex-shrink-0 px-2 pt-2 flex items-start justify-around">
       <input
         v-model="inputMessage"
-        class="textInput rounded-full h-7 mr-1 w-9/10"
+        class="textInput rounded-full h-7 mr-1 px-3 p-0.5 text-sm w-9/10"
         type="text"
         @keypress.enter="sendPlain()"
         maxlength="40"
