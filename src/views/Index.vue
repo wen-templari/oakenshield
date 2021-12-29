@@ -15,7 +15,8 @@ const route = useRoute();
 const id = localStorage.getItem("id");
 const name = localStorage.getItem("name");
 const token = localStorage.getItem("token");
-let avatar = localStorage.getItem("avatar");
+const avatar = ref(localStorage.getItem("avatar"));
+console.log(avatar.value)
 window.api.send("startConn", {
   id: id,
   token: token,
@@ -45,17 +46,21 @@ const listToRender = computed(() => {
   for (let i in res) {
     if (res[i].messageList) {
       res[i].lastMessage = res[i].messageList[res[i].messageList.length - 1] || {};
-      res[i].lastMessage.time = DateFormat(res[i].lastMessage.time);
     }
   }
   return res;
 });
 const searchInputHandler = e => {
   searchList.value = [];
-  Account.get(searchInput.value).then(res => {
-    searchList.value.push(res.data);
-  });
-  searchInput.value = "";
+  if (searchInput.value.length > 0) {
+    Account.get(searchInput.value).then(res => {
+      console.log(res)
+      if (res.data !=null) {
+        searchList.value.push(res.data);
+      }
+    });
+    searchInput.value = "";
+  }
 };
 
 const selectedItem = computed(() => {
@@ -84,7 +89,7 @@ const updateAvatar = event => {
   param.append("upload", file);
   Account.updateAvatar(id, param).then(res => {
     localStorage.setItem("avatar", res.data.path);
-    avatar = res.data.path;
+    avatar.value = res.data.path;
   });
 };
 window.api.receive("updateModel", key => {
@@ -127,7 +132,8 @@ const logout = () => {
       <div class="flex-shrink-0 flex items-end justify-between pb-3 px-4">
         <div class="flex items-end p-1">
           <label class="relative textLink text-xs self-end cursor-pointer rounded-xl">
-            <img class="h-10 w-10 mb-0.5 bg-black rounded-full" :src="avatar" />
+            <img class="h-10 w-10 mb-0.5 rounded-full" :src="avatar" />
+
             <input id="file-upload" type="file" class="sr-only" accept="image/*" @change="updateAvatar" />
           </label>
           <span class="font-semibold ml-1">{{ name }}</span>

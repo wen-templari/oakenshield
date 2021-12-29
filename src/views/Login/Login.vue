@@ -15,10 +15,18 @@ const login = () => {
     id: id.value,
     password: password.value,
   }).then(async res => {
+    console.log(res);
+    if (res.resCode != 0) {
+      return;
+    }
     localStorage.setItem("id", res.data.id);
     localStorage.setItem("name", res.data.name);
     localStorage.setItem("token", res.data.token);
-    localStorage.setItem("avatar", res.data.avatar);
+    if (res.data.avatar != "") {
+      localStorage.setItem("avatar", res.data.avatar);
+    } else {
+      localStorage.setItem("avatar", "https://erebor.oss-cn-hangzhou.aliyuncs.com/1640782786961");
+    }
     DB.init(res.data.id);
     if (res.data.offlineMessage) {
       await DB.setOfflineMessage(res.data.offlineMessage);
@@ -42,7 +50,7 @@ const register = _ => {
     password: password.value,
   }).then(res => {
     console.log(res);
-    if (res.resCode == 200) {
+    if (res.resCode == 0) {
       id.value = res.data.id;
       login();
     }

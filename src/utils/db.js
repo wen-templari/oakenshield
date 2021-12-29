@@ -26,16 +26,28 @@ class DBWrapper {
     }
   }
 
+  async updateContact(id) {
+    await Account.get(id).then(res => {
+      this.db.contact_list.update(id, {
+        name: res.data.name,
+        avatar: res.data.avatar,
+      });
+    });
+    window.api.send("updateModel", id);
+  }
+
+  async getContact(id) {
+    console.log("getContact", id);
+    return await this.db.contact_list.get({ id: id });
+  }
   async getContactList() {
     let contactList = await this.db.contact_list;
     return contactList ? contactList.toArray() : [];
   }
-
-  async getContact(id) {
-    return await this.db.contact_list.get({ id: id });
-  }
-
   async appendMessage(id, message) {
+    if (id == null) {
+      return;
+    }
     let messageString = JSON.stringify(message);
     let copiedMessage = JSON.parse(messageString);
     let contactToAppend = await this.db.contact_list.get({ id: id });

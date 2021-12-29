@@ -1,7 +1,4 @@
 <script setup>
-// when a message is send
-// 1. clear the input field
-// 2. emit sendMessage(content) to index
 import { ref, watch, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
@@ -27,8 +24,9 @@ const self = localStorage.getItem("id");
 const avatar = ref(localStorage.getItem("avatar"));
 const id = ref(route.params.id);
 const contact = ref({});
-const setContact = () => {
+const setContact = async () => {
   id.value = route.params.id;
+  await db.updateContact(id.value);
   db.getContact(id.value).then(res => {
     contact.value = res;
   });
@@ -101,7 +99,7 @@ window.api.receive("updateModel", key => {
       <div v-for="item in messageList">
         <div v-if="item.showTime" class="text-xs font-light text-gray-500 mt-2 text-center">{{ item.showTime }}</div>
         <div class="relative flex my-2" :class="[item.from == self ? 'flex-row-reverse ' : '']">
-          <img class="h-9 w-9 bg-black rounded-full mx-1" :src="avatar" />
+          <img class="h-9 w-9 bg-black rounded-full mx-1" :src="item.from == self ? avatar : contact.avatar" />
           <div
             v-if="item.type == 'plain'"
             class="py-1 px-2 rounded-lg shadow-sm w-min"

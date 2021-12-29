@@ -6,7 +6,8 @@ class WebSocketWrap {
   }
   start(id, token) {
     if (this.ws == null || this.ws.readyState == 3) {
-      this.ws = new WebSocket("ws://localhost:8080/message?id=" + id + "&token=" + token);
+      console.log("start socket");
+      this.ws = new WebSocket("ws://localhost:23213/message?id=" + id + "&token=" + token);
       this.ws.on("open", () => {
         console.log("connected");
         const heartbeatMessage = {
@@ -19,12 +20,12 @@ class WebSocketWrap {
     }
   }
   heartbeat(message) {
-    setTimeout(() => {
-      if (this.ws.readyState == 1) {
+    if (this.ws.readyState == 1) {
+      setTimeout(() => {
         this.ws.send(message);
         this.heartbeat(message);
-      }
-    }, 2000);
+      }, 2000);
+    }
   }
   close() {
     if (this.ws.readyState == 1) {
