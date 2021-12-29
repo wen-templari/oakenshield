@@ -87,14 +87,13 @@ const sendImg = event => {
   });
 };
 
-const handleModelUpdate = key => {
-  console.log(key)
-  if (key == id.value) {
-    setContact();
-  }
-};
 
-window.api.receiveOnce("updateModel", handleModelUpdate);
+window.api.receive("updateModel", value => {
+  console.log(value);
+  if (value.id == id.value) {
+    contact.value = value;
+  }
+});
 </script>
 <template>
   <div class="flex flex-col justify-start h-screen" ref="messageBox">

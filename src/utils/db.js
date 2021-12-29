@@ -27,21 +27,23 @@ class DBWrapper {
   }
 
   async updateContact(id) {
-    console.log("updateContact", id);
+    // console.log("updateContact", id);
     await Account.get(id).then(res => {
       this.db.contact_list.update(id, {
         name: res.data.name,
         avatar: res.data.avatar,
       });
     });
-    window.api.send("updateModel", id);
+    let res = await this.getContact(id);
+    window.api.send("updateModel", res);
   }
 
   async getContact(id) {
-    console.log("getContact", id);
+    // console.log("getContact", id);
     return await this.db.contact_list.get({ id: id });
   }
   async getContactList() {
+    // console.log("getContactList");
     let contactList = await this.db.contact_list;
     return contactList ? contactList.toArray() : [];
   }
@@ -62,6 +64,12 @@ class DBWrapper {
         // contactToAppend.messageList = [];
       });
     }
+    await Account.get(id).then(res => {
+      this.db.contact_list.update(id, {
+        name: res.data.name,
+        avatar: res.data.avatar,
+      });
+    });
     contactToAppend.messageList.push(copiedMessage);
     // console.log("contactToAppend", contactToAppend);
     return this.db.contact_list.where({ id: id }).modify({
@@ -79,7 +87,7 @@ class DBWrapper {
 const db = new DBWrapper();
 window.api.receive("appendMessage", async data => {
   await db.appendMessage(data.key, data.message);
-  console.log("appendMessage", data);
-  window.api.send("updateModel", data.message.from);
+  let contact = await db.getContact(data.key);
+  await window.api.send("updateModel", contact);
 });
 export default db;
