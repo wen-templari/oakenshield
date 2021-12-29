@@ -27,6 +27,7 @@ class DBWrapper {
   }
 
   async updateContact(id) {
+    console.log("updateContact", id);
     await Account.get(id).then(res => {
       this.db.contact_list.update(id, {
         name: res.data.name,
@@ -78,6 +79,7 @@ class DBWrapper {
 const db = new DBWrapper();
 window.api.receive("appendMessage", async data => {
   await db.appendMessage(data.key, data.message);
+  console.log("appendMessage", data);
   window.api.send("updateModel", data.message.from);
 });
 export default db;

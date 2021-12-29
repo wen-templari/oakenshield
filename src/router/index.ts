@@ -7,19 +7,19 @@ const routes = [
   {
     path: "/",
     name: "Index",
-    component: () => import("@/views/Index.vue"),
+    component: Index,
     children: [
       {
         path: ":id",
         name: "Message",
-        component: () => import("@/views/Message/Message.vue"),
+        component: Message,
       },
     ],
   },
   {
     path: "/login",
     name: "Login",
-    component: () => import("@/views/Login/Login.vue"),
+    component: Login,
   },
 ];
 const router = createRouter({

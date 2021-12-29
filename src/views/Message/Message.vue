@@ -24,6 +24,7 @@ const self = localStorage.getItem("id");
 const avatar = ref(localStorage.getItem("avatar"));
 const id = ref(route.params.id);
 const contact = ref({});
+
 const setContact = async () => {
   id.value = route.params.id;
   await db.updateContact(id.value);
@@ -86,11 +87,14 @@ const sendImg = event => {
   });
 };
 
-window.api.receive("updateModel", key => {
+const handleModelUpdate = key => {
+  console.log(key)
   if (key == id.value) {
     setContact();
   }
-});
+};
+
+window.api.receiveOnce("updateModel", handleModelUpdate);
 </script>
 <template>
   <div class="flex flex-col justify-start h-screen" ref="messageBox">

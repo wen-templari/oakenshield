@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed ,onBeforeUnmount} from "vue";
 import UserCard from "@/components/UserCard/UserCard.vue";
 import LayoutBase from "@/layout/LayoutBase.vue";
 import DBWrapper from "@/utils/db";
@@ -100,6 +100,10 @@ const logout = () => {
   localStorage.clear();
   router.push("/login");
 };
+
+onBeforeUnmount(() => {
+  window.api.removeAllListeners();
+});
 </script>
 <template>
   <LayoutBase>
