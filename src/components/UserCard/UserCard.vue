@@ -52,3 +52,8 @@ const message = computed(() => {
     </div>
   </div>
 </template>
+<style>
+.sm-only {
+  @apply hidden sm:flex;
+}
+</style>

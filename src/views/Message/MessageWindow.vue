@@ -53,9 +53,6 @@ export default {
   },
   methods: {
     scrollToBottom() {
-      console.log(this.$refs);
-      this.message = "changed";
-      // DOM 尚未更新
       this.$nextTick(() => {
         let bottom = document.getElementById("messageWindowBottom");
         bottom.scrollIntoView();
