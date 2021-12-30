@@ -10,15 +10,15 @@
 ## todos
 + [x] presist
   + [x] structure
-+ [ ] reigster?
++ [x] reigster?
 + [x] search user
 + [x] ~~separate data between instences~~ 
 + [x] offine message
-+ [ ] login hints
-+ [ ] add notifier
-+ [ ] window button group
-+ [ ] test chat between different client
-+ [ ] file
++ [ ] ~~login hints~~
++ [ ] ~~add notifier~~
++ [x] window button group
++ [x] test chat between different client
++ [x] file
 
 ## 发送信息
 1. /src/component/message
@@ -37,9 +37,9 @@
   ipcMain.on("sendMessage", (event, arg) => {
     // 将消息通过websocket发送给服务器
     WebSocketWrap.ws.send(JSON.stringify(arg)); 
-    // 通过ipc向渲染进程发送"messageSent"事件
-    mainWindow.webContents.send("messageSent", arg); 
-  });
+    // 通过ipc向渲染进程发送"updateModel"事件
+  mainWindow.webContents.send("updateModel", arg.from);
+    });
   ```
 3. 渲染进程中
   ```js
@@ -91,59 +91,3 @@
       ...
     });
    ```
-
-4 frames
-
-
-1
-1 2 
-1 2 3
-2 3 4
-3 4 2
-4 2 1
-2 1 5
-1 5 6
-5 6 2
-6 2 1
-2 1 2
-1 2 3
-2 3 7
-3 7 6
-7 6 3
-6 3 2
-3 2 1
-2 1 2
-
-1 1 
-2 1 2 
-3 1 2 3
-4 1 2 4
-2 1 2 4
-1 1 2 4
-5 1 2 5
-6 1 2 6
-2 1 2 6
-1 1 2 6
-2 1 2 6
-3 3 2 6
-7 3 2 7
-6 3 2 6
-3 3 2 6
-2 3 2 5
-1 3 2 1
-2 3 2 1
-3 3 2 1
-6 6 2 1
-5 5 2 1 
-1 5 2 1
-2 5 2 1
-3 3 2 1
-4 4 2 1
-
-1,2 tran
-3.x process managment !
-  x 3.5/3.6
-4 process/thread
-  4.1
-5 thrad sync
-  ...

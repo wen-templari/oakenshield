@@ -1,6 +1,6 @@
 import axios from "axios";
 // import Notify from "@/components/Notify";
-axios.defaults.baseURL = process.env.NODE_ENV === "development" ? "/api" : "http://localhost:23213/";
+axios.defaults.baseURL = process.env.NODE_ENV === "development" ? "/api" : "http://localhost:8080/";
 
 // axios.defaults.baseURL =
 //   "http://61774500-1018390206127906.test.functioncompute.com/"; //测试

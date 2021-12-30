@@ -7,7 +7,7 @@ class WebSocketWrap {
   start(id, token) {
     if (this.ws == null || this.ws.readyState == 3) {
       console.log("start socket");
-      this.ws = new WebSocket("ws://localhost:23213/message?id=" + id + "&token=" + token);
+      this.ws = new WebSocket("ws://localhost:8080/message?id=" + id + "&token=" + token);
       this.ws.on("open", () => {
         console.log("connected");
         const heartbeatMessage = {
