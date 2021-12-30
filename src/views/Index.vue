@@ -27,7 +27,7 @@ const currentContact = ref({});
 const getContactList = async () => {
   let res = await DBWrapper.getContactList();
   contactList.value = res;
-  if (currentContact.value.id != null) {
+  if (currentContact.value != null) {
     currentContact.value = res.find(c => c.id == currentContact.value.id);
   }
 };

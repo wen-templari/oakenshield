@@ -1,24 +1,11 @@
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
 import { File } from "@/services/api";
 import db from "@/utils/db";
 import DateFormat from "@/utils/dateFormat.js";
-
-// const messageBox = ref(null);
-// const scrollTop = messageBox.value.scrollTop;
-// defineExpose({ scrollTop });
-// // const setScrollTop = e => {
-// //   // messageBox.value.
-// // };
-// onMounted(() => {
-//   console.log(messageBox.value.scrollHeight);
-//   messageBox.value.scrollTop = messageBox.value.scrollHeight;
-//   console.log(messageBox.value.scrollTop);
-//   // messageBox.value.focus();
-// });
-// window.scrollTo(0, document.body.scrollHeight);
+import MessageWindow from "./MessageWindow.vue";
 
 const self = localStorage.getItem("id");
 const avatar = ref(localStorage.getItem("avatar"));
@@ -87,35 +74,16 @@ const sendImg = event => {
   });
 };
 
-
 window.api.receive("updateModel", value => {
-  console.log(value);
   if (value.id == id.value) {
     contact.value = value;
   }
 });
 </script>
 <template>
-  <div class="flex flex-col justify-start h-screen" ref="messageBox">
+  <div class="flex flex-col justify-start h-screen">
     <div class="h-13 flex-shrink-0 drag bg-[#f0f2f3] flex items-center justify-center">{{ contact.name }}</div>
-    <div class="flex-grow flex flex-col p-2 overflow-auto" ref="messageBox">
-      <div v-for="item in messageList">
-        <div v-if="item.showTime" class="text-xs font-light text-gray-500 mt-2 text-center">{{ item.showTime }}</div>
-        <div class="relative flex my-2" :class="[item.from == self ? 'flex-row-reverse ' : '']">
-          <img class="h-9 w-9 bg-black rounded-full mx-1" :src="item.from == self ? avatar : contact.avatar" />
-          <div
-            v-if="item.type == 'plain'"
-            class="py-1 px-2 rounded-lg shadow-sm w-min"
-            :class="[item.from == self ? 'bg-blue-200' : 'bg-gray-200']"
-          >
-            {{ item.content }}
-          </div>
-          <div v-if="item.type == 'img'" class="p-3 rounded-lg shadow-sm bg-gray-200">
-            <img class="w-50" :src="item.content" alt="" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <MessageWindow :messageList="messageList" :contact="contact" :self="self" :avatar="avatar"></MessageWindow>
     <div class="h-12 flex-shrink-0 px-2 pt-2 flex items-start justify-around">
       <input
         v-model="inputMessage"
