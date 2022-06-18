@@ -2,27 +2,8 @@
 > a vue3/windicss/electron chat app for project durin -->
 # Erebor
 > 一个基于 Electron/Vue3/WindiCss/Go 的聊天APP
-+ 桌面端: OakenShield
-+ 服务端: Durin
-
-## objectives
-+ 模拟QQ聊天软件
-  +	账户信息管理，包括昵称、头像、级别等
-  + 通信功能实现，包括文字传输、图片传输
-
-
-## todos
-+ [x] presist
-  + [x] structure
-+ [x] reigster?
-+ [x] search user
-+ [x] ~~separate data between instences~~ 
-+ [x] offine message
-+ [ ] ~~login hints~~
-+ [ ] ~~add notifier~~
-+ [x] window button group
-+ [x] test chat between different client
-+ [x] file
++ 桌面端: OakenShield(本仓库)
++ 服务端: [Durin](https://github.com/wen-templari/durin)
 
 
 ## 如何使用
